@@ -1,14 +1,16 @@
-import { Outlet } from "react-router-dom";
+import { Outlet, useLocation } from "react-router-dom";
 import Footer from "../Routes/Shared/Footer/Footer";
 import NevBar from "../Routes/Shared/NevBar/NevBar";
 
 
 const Main = () => {
+    const location = useLocation();
+    const noHeaderFooter = location.pathname.includes('/login') || location.pathname.includes('/signup');
     return (
         <div>
-            <NevBar></NevBar>
+            { noHeaderFooter || <NevBar></NevBar>}
             <Outlet></Outlet>
-            <Footer></Footer>
+            { noHeaderFooter || <Footer></Footer>}
         </div>
     );
 };
