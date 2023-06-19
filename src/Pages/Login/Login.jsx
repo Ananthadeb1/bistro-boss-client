@@ -1,45 +1,59 @@
-import { useContext, useEffect, useRef, useState } from 'react';
-import { loadCaptchaEnginge, LoadCanvasTemplate,  validateCaptcha } from 'react-simple-captcha';
-import { AuthContext } from '../../Providers/AuthProvider';
-import { Link } from 'react-router-dom';
+import { useContext, useEffect,  useState } from "react";
+import {
+  loadCaptchaEnginge,
+  LoadCanvasTemplate,
+  validateCaptcha,
+} from "react-simple-captcha";
+import { AuthContext } from "../../Providers/AuthProvider";
+import { Link } from "react-router-dom";
+import { Helmet } from "react-helmet-async";
+import Swal from "sweetalert2";
 
 const Login = () => {
-    const captchaRef = useRef(null)
-    const [disabled, setDisabled ] = useState(true);
-    
-    const {signIn}=useContext(AuthContext)
+  const [disabled, setDisabled] = useState(true);
 
-    useEffect(()=> {
-        loadCaptchaEnginge(6);
-    }, [])
+  const { signIn } = useContext(AuthContext);
 
+  useEffect(() => {
+    loadCaptchaEnginge(6);
+  }, []);
 
-    const handelValidateCaptcha = () =>{
-        const captcha_Value = captchaRef.current.value;
-        console.log(captcha_Value)
-        if (validateCaptcha(captcha_Value)) {
-            setDisabled(false)
-        }
-   
-        else {
-            setDisabled(true)
-            alert('Captcha Does Not Match, Try again! Latter case matters');
-        }
+  const handelValidateCaptcha = (e) => {
+    const captcha_Value = e.target.value;
+    console.log(captcha_Value);
+    if (validateCaptcha(captcha_Value)) {
+      setDisabled(false);
+    } else {
+      setDisabled(true);
+      alert("Captcha Does Not Match, Try again! Latter case matters");
     }
-    const handelLogin = event =>{
-        event.preventDefault();
-        const form = event.target;
-        const email = form.email.value;
-        const password = form.password.value;
-        console.log(email, password)
-        signIn(email,password)
-        .then(result =>{
-          const user = result.user;
-          console.log(user)
-        })
-    }
-    return (
-    <div >
+  };
+  const handelLogin = (event) => {
+    event.preventDefault();
+    const form = event.target;
+    const email = form.email.value;
+    const password = form.password.value;
+    console.log(email, password);
+    signIn(email, password)
+    .then((result) => {
+      const user = result.user;
+      console.log(user);
+      Swal.fire({
+        title: "user LogIn successfully",
+        showClass: {
+          popup: "animate__animated animate__fadeInDown",
+        },
+        hideClass: {
+          popup: "animate__animated animate__fadeOutUp",
+        },
+      });
+    });
+  };
+  return (
+    <div>
+      <Helmet>
+        <title>Bistro Boss | LogIn</title>
+      </Helmet>
       <div className="hero min-h-screen bg-slate-100">
         <div className="hero-content flex-col lg:flex-row-reverse">
           <div className="text-center md:w-1/2 lg:text-left">
@@ -74,28 +88,42 @@ const Login = () => {
                   className="input input-bordered bg-white"
                 />
                 <label className="label">
-                  <a href="#" className="label-text-alt link link-hover text-black">
+                  <a
+                    href="#"
+                    className="label-text-alt link link-hover text-black"
+                  >
                     Forgot password?
                   </a>
                 </label>
               </div>
               <div className="form-control">
                 <label className="label">
-                <LoadCanvasTemplate />
+                  <LoadCanvasTemplate />
                 </label>
                 <input
                   type="text"
-                  ref={captchaRef}
+                  onBlur={handelValidateCaptcha}
                   name="captcha"
                   placeholder="type the above text "
                   className="input input-bordered bg-white"
                 />
-                <button onClick={handelValidateCaptcha} className="btn btn-outline btn-xs mt-3 text-black">Verify</button>
               </div>
               <div className="form-control mt-6">
-                <input disabled={disabled} className="btn btn-primary" type="submit" value="Login" />
+                <input
+                  disabled={disabled}
+                  className="btn btn-primary"
+                  type="submit"
+                  value="Login"
+                />
               </div>
-            <p><small>New here? <Link to="/signup" className='text-blue-500'>create an account.</Link></small></p>
+              <p>
+                <small>
+                  New here?{" "}
+                  <Link to="/signup" className="text-blue-500">
+                    create an account.
+                  </Link>
+                </small>
+              </p>
             </form>
           </div>
         </div>

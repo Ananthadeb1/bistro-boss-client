@@ -1,12 +1,18 @@
+import { useContext } from "react";
 import { Link } from "react-router-dom";
+import { AuthContext } from "../../../Providers/AuthProvider";
 
 const NevBar = () => {
+    const {user, logOut}=useContext(AuthContext)
+    const handleSignOut =()=>{
+        logOut();
+    }
   const nevOptions = 
     <>
       <li><Link to="/">Home</Link></li>
       <li><Link to="/menu">Menu</Link></li>
       <li><Link to="/order/salad">Order</Link></li>
-      <li><Link to="/login">LogIn</Link></li>
+      { user? <><button onClick={handleSignOut} className="pt-[2px] ml-[5px] text-sm">SignOut</button></> : <><li><Link to="/login">LogIn</Link></li></>}
     </>
  
 
