@@ -2,14 +2,16 @@ import { useContext } from "react";
 import { Helmet } from "react-helmet-async";
 import { useForm } from "react-hook-form";
 import { AuthContext } from "../../Providers/AuthProvider";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import Swal from "sweetalert2";
 
 const SignUp = () => {
-  const  {createUser} = useContext(AuthContext)
+  const  {createUser, updateUserProfile} = useContext(AuthContext);
+  const navigate = useNavigate();
   const {
     register,
     handleSubmit,
-    watch,
+    reset,
     formState: { errors },
   } = useForm();
 
@@ -19,11 +21,25 @@ const SignUp = () => {
     .then(result =>{
       const loggedUser = result.user;
       console.log(loggedUser)
+      updateUserProfile(data.name,data.photoURL)
+      .then(()=>{
+        console.log('user profile updated');
+        reset();
+        Swal.fire({
+          position: 'top-end',
+          icon: 'success',
+          title: 'User created successfully',
+          showConfirmButton: false,
+          timer: 1500
+        })
+        navigate('/');
+      })
+      .catch(error=> console.log(error))
     })
   };
 
 
-  console.log(watch())
+
 
   return (
     <>
@@ -56,6 +72,18 @@ const SignUp = () => {
               </div>
               <div className="form-control">
                 <label className="label">
+                  <span className="label-text text-black">Photo Url</span>
+                </label>
+                <input
+                  type="text"
+                  {...register("photoURL", { required: true })}
+                  placeholder="Photo URL"
+                  className="input input-bordered bg-white"
+                />
+                {errors.photoURL && <span className="text-red-600">Photo URL is required</span>}
+              </div>
+              <div className="form-control">
+                <label className="label">
                   <span className="label-text text-black">Email</span>
                 </label>
                 <input
@@ -80,14 +108,6 @@ const SignUp = () => {
                 {errors.password?.type==="minLength" && <span className="text-red-600">Password must be in 6 characters</span>}
                 {errors.password?.type ==="maxLength" && <span className="text-red-600">Password should not above then 20 characters</span>}
                 {errors.password?.type ==="pattern" && <span className="text-red-600">Password must have one upper case and one lower case and one special character</span>}
-                <label className="label">
-                  <a
-                    href="#"
-                    className="label-text-alt link link-hover text-black"
-                  >
-                    Forgot password?
-                  </a>
-                </label>
               </div>
               <div className="form-control mt-6">
                 <input className="btn btn-primary"  type="submit" value="Signup" />

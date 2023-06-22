@@ -5,3 +5,9 @@ body {
   background-color: #fff; /* Replace #fff with the desired light color */
   color: black;
 }
+.drawer-side a.active{
+  color: white;
+}
+.drawer-side a{
+  background-color: transparent;
+}

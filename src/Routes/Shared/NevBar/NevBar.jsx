@@ -1,20 +1,56 @@
 import { useContext } from "react";
 import { Link } from "react-router-dom";
 import { AuthContext } from "../../../Providers/AuthProvider";
+import { FaShoppingCart } from 'react-icons/fa';
+import useCart from "../../../hooks/useCart";
 
 const NevBar = () => {
-    const {user, logOut}=useContext(AuthContext)
-    const handleSignOut =()=>{
-        logOut();
-    }
-  const nevOptions = 
+  const { user, logOut } = useContext(AuthContext);
+  const [cart] = useCart();
+  const handleSignOut = () => {
+    logOut()
+      .then(() => {})
+      .then((error) => {
+        console.log(error);
+      });
+  };
+  const nevOptions = (
     <>
-      <li><Link to="/">Home</Link></li>
-      <li><Link to="/menu">Menu</Link></li>
-      <li><Link to="/order/salad">Order</Link></li>
-      { user? <><button onClick={handleSignOut} className="pt-[2px] ml-[5px] text-sm">SignOut</button></> : <><li><Link to="/login">LogIn</Link></li></>}
+      <li>
+        <Link to="/">Home</Link>
+      </li>
+      <li>
+        <Link to="/menu">Menu</Link>
+      </li>
+      <li>
+        <Link to="/order/salad">Order</Link>
+      </li>
+      <li>
+        <Link to="/secret">Secret</Link>
+      </li>
+      <li>
+        <Link to="/dashboard/mycart">
+          <button className="btn">
+          <FaShoppingCart></FaShoppingCart>
+            <div className="badge badge-secondary">+{cart?.length || 0}</div>
+          </button>
+        </Link>
+      </li>
+      {user ? (
+        <>
+          <li>
+            <Link onClick={handleSignOut}>Sign Out</Link>
+          </li>
+        </>
+      ) : (
+        <>
+          <li>
+            <Link to="/login">LogIn</Link>
+          </li>
+        </>
+      )}
     </>
- 
+  );
 
   return (
     <>
@@ -41,18 +77,16 @@ const NevBar = () => {
               tabIndex={0}
               className="menu menu-sm dropdown-content mt-3 p-2 shadow bg-base-100 rounded-box w-52"
             >
-                {nevOptions}
+              {nevOptions}
             </ul>
           </div>
           <a className="btn btn-ghost normal-case text-xl">Bistro Boss </a>
         </div>
         <div className="navbar-center hidden lg:flex">
-          <ul className="menu menu-horizontal px-1">
-           {nevOptions}
-          </ul>
+          <ul className="menu menu-horizontal px-1">{nevOptions}</ul>
         </div>
         <div className="navbar-end ">
-          <a className="btn text-white" >Button</a>
+          <a className="btn text-white">Button</a>
         </div>
       </div>
     </>
