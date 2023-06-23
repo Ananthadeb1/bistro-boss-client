@@ -42,7 +42,7 @@ const MyCart = () => {
       </Helmet>
       <div className="uppercase font-semibold h-[60px] flex justify-evenly items-center">
         <h3 className="text-3xl">Total items: {cart.length}</h3>
-        <h3 className="text-3xl">Total items: {totalPrice}</h3>
+        <h3 className="text-3xl">Total price: {totalPrice}</h3>
         <button className="btn btn-warning btn-sm">PAY</button>
       </div>
       <div className="overflow-x-auto">
